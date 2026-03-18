@@ -333,6 +333,22 @@ abstract class MathFunctionsValidateSuite extends FunctionsValidateSuite {
     compareResultsAgainstVanillaSpark("select round(44, -1)", true, { _ => })
   }
 
+  test("round literal with 6 digits") {
+    // Validate rounding a literal with 6 fractional digits keeps precision
+    runQueryAndCompare("select round(102.825291, 6)") {
+      checkGlutenOperatorMatch[ProjectExecTransformer]
+    }
+    runQueryAndCompare("select round(10.424817, 6)") {
+      checkGlutenOperatorMatch[ProjectExecTransformer]
+    }
+    runQueryAndCompare("select round(-82.737209, 6)") {
+      checkGlutenOperatorMatch[ProjectExecTransformer]
+    }
+    runQueryAndCompare("select round(-123.106541, 6)") {
+      checkGlutenOperatorMatch[ProjectExecTransformer]
+    }
+  }
+
   test("shiftleft") {
     runQueryAndCompare("SELECT shiftleft(int_field1, 1) from datatab limit 1") {
       checkGlutenOperatorMatch[ProjectExecTransformer]
